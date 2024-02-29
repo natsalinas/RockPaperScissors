@@ -5,7 +5,6 @@ window = tk.Tk()
 window.geometry("600x300")
 window.title("Rock, Paper, Scissors!")
 
-#font=('Comic Sans MS',16)
 intro = "Welcome to the game of Rock, Paper, Scissors.\n\nYou may select one out of the three available options. Select 'Shoot' once you are ready to go against your opponent.\n\nMay the odds be in your favor!"
 label = tk.Label(window, text=intro, anchor="w", justify="left", wraplength=500)
 label.pack(pady=20)
@@ -20,8 +19,7 @@ def is_win(player, opponent):
     if(player == "Rock" and opponent == "Scissors") or (player == "Scissors" and opponent == "Paper") or (player == "Paper" and opponent == "Rock"):
         return True
 
-# Create player class
-# Each player has it's own buttons and textbox 
+# Create game class with tkinter widgets
 class game:
     def __init__(self, main):
         top = tk.Frame(main)
@@ -68,8 +66,9 @@ class game:
         self.p1_textbox.insert("end", "Scissors")
 
     def shoot_button(self):
-        # grab both player and AI selections. 
+        # grab both player selection 
         p_choice = self.p1_textbox.get("1.0", "end-1c")
+        # check selection is not blank
         if (p_choice == ""):
             self.results_label.config(text="Please select a valid option.", fg="white")
         else:
