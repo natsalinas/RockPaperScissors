@@ -1,85 +1,95 @@
 import random
 import tkinter as tk
 
-p1_rock = 0
-p1_paper = 0 
-p1_scissors = 0 
-
-def play():
-    user = input("What is your choice?\n'r' for rock, 'p' for paper, 's' for scissors\n")
-    computer = random.choice(['r', 'p', 's'])
-
-    if user == computer:
-        return 'tie'
-    
-    # r > s, s > p, p > r
-    if is_win(user, computer):
-        return 'You won!'
-    
-    return 'You lost!'
-
-def is_win(player, opponent):
-    # return true if player wins 
-    # r > s, s > p, p > r
-    if(player == 'r' and opponent == 's') or (player == 's' and opponent == 'p') or (player == 'p' and opponent == 'r'):
-        return True
-    
-# if button is clicked, the selected "choice" is displayed on the text field. 
-# Define function to get the information about the Button
-def press_button(t):
-    if t == 1:
-        print("You selected Rock")
-    elif t == 2:
-        print("You selected Paper")
-    elif t == 3:
-        print("You selected Scissors")
-
-#def update_p1(tk.Text, string):
-#   tk.Text.insert(tk.END, string)
-
-
-
-
 window = tk.Tk() 
 window.geometry("600x300")
 window.title("Rock, Paper, Scissors!")
 
-label = tk.Label(window, text="Select your choice", font=('Arial',18))
-label.grid(row=0)
+#font=('Comic Sans MS',16)
+intro = "Welcome to the game of Rock, Paper, Scissors.\n\nYou may select one out of the three available options. Select 'Shoot' once you are ready to go against your opponent.\n\nMay the odds be in your favor!"
+label = tk.Label(window, text=intro, anchor="w", justify="left", wraplength=500)
+label.pack(pady=20)
 
-# textbox to hold generated password 
-p1_textbox = tk.Text(window, height=1, width=20, font=('Arial', 16))
-p1_textbox.grid(row=4, column=0, padx=5)
+def play():
+    computer = random.choice(["Rock", "Paper", "Scissors"])
+    return computer
+
+def is_win(player, opponent):
+    # return true if player wins 
+    # r > s, s > p, p > r
+    if(player == "Rock" and opponent == "Scissors") or (player == "Scissors" and opponent == "Paper") or (player == "Paper" and opponent == "Rock"):
+        return True
+
+# Create player class
+# Each player has it's own buttons and textbox 
+class game:
+    def __init__(self, main):
+        top = tk.Frame(main)
+        bottom = tk.Frame(main)
+        top.pack(side="top")
+        bottom.pack(side="bottom", expand=True)
+
+        # buttons on the top 
+        self.r_button = tk.Button(top, text="Rock", width=10, height=2, command=self.rock_button)
+        self.r_button.pack(side="left")
+
+        self.p_button = tk.Button(top, text="Paper", width=10, height=2, command=self.paper_button)
+        self.p_button.pack(side="left")
+
+        self.s_button = tk.Button(top, text="Scissors", width=10, height=2, command=self.scissors_button)
+        self.s_button.pack(side="left")
+
+        self.sh_button = tk.Button(top, text="Shoot!", width=10, height=2, command=self.shoot_button, highlightbackground="#2E35FF", fg="#3B81FF")
+        self.sh_button.pack(side="left", padx=20)
+
+        self.p1_textbox = tk.Text(bottom, height=1, width=20, font=("",16))
+        self.p1_textbox.pack(side="left")
+
+        self.vs_label = tk.Label(bottom, text="VS", font=("",16))
+        self.vs_label.pack(side="left", padx=5)
+
+        self.ai_textbox = tk.Text(bottom, height=1, width=20, font=("",16))
+        self.ai_textbox.pack(side="left")
+
+        self.results_label = tk.Label(window, text="", font=("",18))
+        self.results_label.pack(side="bottom")
 
 
-r_button = tk.Button(window, text="Rock", width=10, font=('Arial', 18), command=lambda t= 1: press_button(t))
-r_button.grid(row=1, column=0, pady=20)
-if (p1_rock == 1):
-    p1_textbox.insert(tk.END, "Rock")
+    def rock_button(self):
+        self.p1_textbox.delete(1.0, "end") # clear existing text
+        self.p1_textbox.insert("end", "Rock")
 
+    def paper_button(self):
+        self.p1_textbox.delete(1.0, "end") # clear existing text
+        self.p1_textbox.insert("end", "Paper")
 
-p_button = tk.Button(window, text="Paper", width=10, font=('Arial', 18), command=lambda t= 2: press_button(t))
-p_button.grid(row=1, column=1, padx=10, pady=20)
+    def scissors_button(self):
+        self.p1_textbox.delete(1.0, "end") # clear existing text
+        self.p1_textbox.insert("end", "Scissors")
 
-s_button = tk.Button(window, text="Scissors", width=10, font=('Arial', 18), command=lambda t= 3: press_button(t))
-s_button.grid(row=1, column=2, padx=10, pady=20)
+    def shoot_button(self):
+        # grab both player and AI selections. 
+        p_choice = self.p1_textbox.get("1.0", "end-1c")
+        if (p_choice == ""):
+            self.results_label.config(text="Please select a valid option.", fg="white")
+        else:
+            computer_choice = play()
 
-shoot_button = tk.Button(window, text="Shoot!", width=10, font=('Arial', 18), highlightbackground='green', fg='green', command=lambda t= "Shoot Clicked": press_button(t))
-shoot_button.grid(row=7, column=1, pady=20)
-
-p1_label = tk.Label(window, text="Player 1", font=('Arial',18))
-p1_label.grid(row=5, column=0)
-
-vs_label = tk.Label(window, text="VS", font=('Arial',18))
-vs_label.grid(row=4, column=1)
-
-# textbox to hold generated password 
-ai_textbox = tk.Text(window, height=1, width=20, font=('Arial', 16))
-ai_textbox.grid(row=4, column=2, padx=5)
-
-ai_label = tk.Label(window, text="Computer", font=('Arial',18))
-ai_label.grid(row=5, column=2)
-
+            # update computer textbox
+            self.ai_textbox.delete(1.0, "end") # clear existing text
+            self.ai_textbox.insert("end", computer_choice)
+            
+            # compare selections to determine who won. 
+            if p_choice == computer_choice:
+                self.results_label.config(text="Tie.", fg="yellow")
+            # r > s, s > p, p > r
+            elif is_win(p_choice, computer_choice):
+                self.results_label.config(text="You won!", fg="#76BA1B")
+            else: 
+                self.results_label.config(text="You lost!", fg="#FF2800")
+    
+# create game window
+g = game(window)
 
 # print(play())
 
